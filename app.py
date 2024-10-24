@@ -18,7 +18,7 @@ if __name__ == "__main__":
 
     # Init for MLflow
     APP_URI = os.getenv("APP_URI")
-    print(APP_URI)
+    print(f"Call MLflow URI: {APP_URI}")
     EXPERIMENT_NAME = "doctor-cancellation-detector"
 
     mlflow.set_tracking_uri(APP_URI)
@@ -96,7 +96,7 @@ if __name__ == "__main__":
         # Log other model performance metrics or custom information
         mlflow.log_param("test_size", trainer.test_size)
 
-        # Log model
+        # Log the sklearn model and register as version
         mlflow.sklearn.log_model(
             sk_model=trainer.model,  # Note: model should be the trained instance
             artifact_path=EXPERIMENT_NAME,
