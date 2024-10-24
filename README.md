@@ -14,7 +14,9 @@ heroku container:release web -a mlflow-container-name
 
 ## Launch training
 
-Create for exeample a run.sh file with this code :
+### With a script
+
+Create for example a run.sh file with this code :
 
 ```bash
 docker run -it -p 8080:8080\
@@ -25,4 +27,25 @@ docker run -it -p 8080:8080\
  -e AWS_ARTIFACT_S3_URI="s3://xxx-bucket/xxx-artifacts/"\
  -e DATABASE_URL="postgres://xxxx"\
  mlflow-container-name python train.py
+```
+
+### With a MLproject file
+
+Create a secrets.sh scripts with all env data to export.
+
+```bash
+export MLFLOW_TRACKING_URI="https://mlflow-xxx.herokuapp.com"
+export ...
+```
+
+Add to OS env variables.
+
+```bash
+source secrets.sh
+```
+
+launch :
+
+```bash
+mlflow run .
 ```
