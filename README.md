@@ -4,12 +4,14 @@ Machine learning model with MLflow environment to detect cancellation with docto
 
 ## Install
 
+Do this command in the docker folder.
+
 ```bash
 heroku container:login
-heroku create --region eu mlflow-container-name
-heroku stack:set container -a  mlflow-container-name
-heroku container:push web -a mlflow-container-name
-heroku container:release web -a mlflow-container-name
+heroku create --region eu app_name
+heroku stack:set container -a  app_name
+heroku container:push web -a app_name
+heroku container:release web -a app_name
 ```
 
 ## Launch training
