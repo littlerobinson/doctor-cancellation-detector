@@ -7,30 +7,28 @@ class ModelTrainer:
     A class to train machine learning models.
 
     Attributes:
-        preprocessor (DataPreprocessor): The data preprocessor.
-        model (object): The machine learning model.
+        data_preprocessor (DataPreprocessor): The data preprocessor.
+        pipeline (object): The machine learning model pipeline.
         test_size (float): The proportion of the dataset to include in the test split.
         random_state (int): The seed used by the random number generator.
+        y_pred (np.ndarray): The predictions for the test set.
+        y_train_pred (np.ndarray): The predictions for the training set.
     """
 
-    def __init__(self, preprocessor, model, test_size=0.2, random_state=42):
+    def __init__(self, data_preprocessor, pipeline, test_size=0.2, random_state=42):
         """
         Initializes the ModelTrainer with the preprocessor, model, test size, and random state.
 
         Args:
             preprocessor (DataPreprocessor): The data preprocessor.
-            model (object): The machine learning model.
+            pipeline (object): Pipeline object.
             test_size (float): The proportion of the dataset to include in the test split.
             random_state (int): The seed used by the random number generator.
         """
-        self.preprocessor = preprocessor
-        self.model = model
+        self.data_preprocessor = data_preprocessor
+        self.pipeline = pipeline
         self.test_size = test_size
         self.random_state = random_state
-        self.y_train = None
-        self.y_test = None
-        self.X_train = None
-        self.X_test = None
         self.y_pred = None
         self.y_train_pred = None
 
@@ -38,33 +36,31 @@ class ModelTrainer:
         """
         Trains the machine learning model using the preprocessed data.
         """
-        # Get the preprocessed data
-        X_preprocessed, y = self.preprocessor.get_preprocessed_data()
 
         # Split the data into training and test sets
-        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
-            X_preprocessed,
-            y,
+        X_train, X_test, y_train, y_test = train_test_split(
+            self.data_preprocessor.X,
+            self.data_preprocessor.y,
             test_size=self.test_size,
             random_state=self.random_state,
-            stratify=y,
+            stratify=self.data_preprocessor.y,
         )
 
         # Train the model
-        self.model.fit(self.X_train, self.y_train)
+        self.pipeline.fit(X_train, y_train)
 
         # Make predictions
-        self.y_pred = self.model.predict(self.X_test)
-        self.y_train_pred = self.model.predict(self.X_train)
+        # Not need to transform X_test, already done in data_processor
+        self.y_pred = self.pipeline.predict(X_test)
+
+        self.y_train_pred = self.pipeline.predict(X_train)
 
         # Evaluate the model
-        accuracy = accuracy_score(self.y_test, self.y_pred)
-        f1 = f1_score(self.y_test, self.y_pred)
+        accuracy = accuracy_score(y_test, self.y_pred)
+        f1 = f1_score(y_test, self.y_pred)
 
         print("Accuracy:", accuracy)
-        print(
-            "Classification Report:\n", classification_report(self.y_test, self.y_pred)
-        )
+        print("Classification Report:\n", classification_report(y_test, self.y_pred))
 
         return accuracy, f1
 
