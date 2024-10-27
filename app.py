@@ -87,8 +87,6 @@ if __name__ == "__main__":
         trainer = ModelTrainer(preprocessor, model)
         accuracy_score, f1_score = trainer.train()
 
-        predictions = trainer.get_prediction()
-
         # Log metrics
         mlflow.log_metric("test_accuracy_score", accuracy_score)
         mlflow.log_metric("test_f1_score", f1_score)
@@ -96,12 +94,19 @@ if __name__ == "__main__":
         # Log other model performance metrics or custom information
         mlflow.log_param("test_size", trainer.test_size)
 
+        predictions = trainer.model.predict(trainer.X_train.toarray()[:1])
+
+        print(predictions)
+
         # Log the sklearn model and register as version
         mlflow.sklearn.log_model(
             sk_model=trainer.model,  # Note: model should be the trained instance
             artifact_path=EXPERIMENT_NAME,
             registered_model_name=model_name,  # Choose a meaningful name
-            signature=infer_signature(trainer.X_train, predictions),
+            signature=infer_signature(
+                preprocessor.X[:1],
+                predictions,
+            ),
         )
 
 print("...Done!")

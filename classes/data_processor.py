@@ -71,7 +71,7 @@ class DataPreprocessor:
         Returns the preprocessed data.
 
         Returns:
-            tuple: A tuple containing the preprocessed features and the target.
+            tuple: A tuple containing the non preprocessed features, the preprocessed features and the target.
         """
         if self.preprocessor is None:
             raise ValueError(
