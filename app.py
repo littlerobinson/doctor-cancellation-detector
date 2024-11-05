@@ -1,5 +1,4 @@
 import os
-import time
 
 import mlflow
 import pandas as pd
@@ -27,9 +26,6 @@ if __name__ == "__main__":
 
     # Get our experiment info
     experiment = mlflow.get_experiment_by_name(EXPERIMENT_NAME)
-
-    # Time execution
-    start_time = time.time()
 
     # Load data
     rawdata = pd.read_csv("./data/rawdata.zip")
